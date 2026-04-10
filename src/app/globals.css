@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+/* === Design Tokens === */
+:root {
+  /* Surfaces */
+  --surface-primary: #0A0A0A;
+  --surface-card: #141414;
+  --surface-elevated: #1A1A1A;
+  --surface-hover: #252525;
+  --surface-inverse: #FFFFFF;
+
+  /* Foreground */
+  --fg-primary: #FFFFFF;
+  --fg-secondary: #A1A1AA;
+  --fg-muted: #71717A;
+  --fg-inverse: #0A0A0A;
+
+  /* Accents */
+  --accent-primary: #A855F7;
+  --accent-secondary: #EC4899;
+  --accent-glow: rgba(168, 85, 247, 0.2);
+
+  /* Borders */
+  --border-subtle: #1A1A1A;
+
+  /* Radii */
+  --rounded-lg: 8px;
+  --rounded-xl: 12px;
+  --rounded-3xl: 24px;
+  --rounded-full: 9999px;
+
+  /* Font families */
+  --font-heading: var(--font-inter), system-ui, sans-serif;
+  --font-body: var(--font-geist-sans, var(--font-inter)), system-ui, sans-serif;
+  --font-caption: var(--font-funnel-sans, var(--font-inter)), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono, monospace), monospace;
+}
+
+/* === Tailwind Theme Extension === */
+@theme {
+  --color-surface-primary: var(--surface-primary);
+  --color-surface-card: var(--surface-card);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-inverse: var(--surface-inverse);
+
+  --color-fg-primary: var(--fg-primary);
+  --color-fg-secondary: var(--fg-secondary);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-inverse: var(--fg-inverse);
+
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-glow: var(--accent-glow);
+
+  --color-border-subtle: var(--border-subtle);
+
+  --radius-lg: var(--rounded-lg);
+  --radius-xl: var(--rounded-xl);
+  --radius-3xl: var(--rounded-3xl);
+  --radius-full: var(--rounded-full);
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-caption: var(--font-caption);
+  --font-mono: var(--font-mono);
+}
+
+/* === Base Styles === */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--surface-primary);
+  color: var(--fg-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}

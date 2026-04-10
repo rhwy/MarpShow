@@ -1,0 +1,35 @@
+services:
+  markshow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: markshow-dev
+    ports:
+      - "${APP_PORT:-3737}:3737"
+    volumes:
+      # Source code bind mount for hot reload
+      - .:/app
+      # Prevent overwriting container node_modules with host
+      - /app/node_modules
+      # Prevent .next build cache conflicts
+      - /app/.next
+      # Persistent storage for presentations
+      - markshow-data:${STORAGE_PATH:-/data/presentations}
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-claude-sonnet-4-20250514}
+      - ANTHROPIC_API_URL=${ANTHROPIC_API_URL:-https://api.anthropic.com}
+      - STORAGE_PATH=${STORAGE_PATH:-/data/presentations}
+      - WATCHPACK_POLLING=true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3737/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  markshow-data:
