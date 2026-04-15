@@ -37,9 +37,17 @@ coverage/
 # Docker
 .docker/
 
+# LikeC4 diagram exports
+docs/diagrams/dist/
+docs/diagrams/export/
+
 # Misc
 *.tsbuildinfo
 next-env.d.ts
 
 # Pencil design files (binary)
 *.pen
+
+# Presentation data (user content, bind-mounted)
+data/presentations/*
+!data/presentations/.gitkeep

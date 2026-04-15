@@ -1,0 +1,47 @@
+// MarkShow — C4 Architecture Specification
+// Defines element kinds, relationship types, and tags
+
+specification {
+
+  element actor {
+    style {
+      shape person
+      color green
+    }
+  }
+
+  element system {
+    style {
+      color blue
+    }
+  }
+
+  element container {
+    style {
+      color indigo
+    }
+  }
+
+  element component {
+    style {
+      color slate
+    }
+  }
+
+  element storage {
+    style {
+      shape storage
+      color amber
+    }
+  }
+
+  element external {
+    style {
+      color muted
+    }
+  }
+
+  tag deprecated
+  tag optional
+
+}

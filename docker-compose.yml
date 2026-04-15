@@ -6,7 +6,7 @@ services:
       target: dev
     container_name: markshow-dev
     ports:
-      - "${APP_PORT:-3737}:3737"
+      - "${APP_PORT:-3737}:3000"
     volumes:
       # Source code bind mount for hot reload
       - .:/app
@@ -14,22 +14,20 @@ services:
       - /app/node_modules
       # Prevent .next build cache conflicts
       - /app/.next
-      # Persistent storage for presentations
-      - markshow-data:${STORAGE_PATH:-/data/presentations}
+      # Persistent storage for presentations (local folder bind mount)
+      - ./data/presentations:/data/presentations
     environment:
       - NODE_ENV=${NODE_ENV:-development}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
-      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-claude-sonnet-4-20250514}
-      - ANTHROPIC_API_URL=${ANTHROPIC_API_URL:-https://api.anthropic.com}
+      - AI_API_URL=${AI_API_URL:-http://host.docker.internal:11434/v1}
+      - AI_API_KEY=${AI_API_KEY:-}
+      - AI_MODEL=${AI_MODEL:-gemma4}
+      - AI_SYSTEM_PROMPT=${AI_SYSTEM_PROMPT:-You are an AI assistant helping create and edit Marp markdown presentations.}
       - STORAGE_PATH=${STORAGE_PATH:-/data/presentations}
       - WATCHPACK_POLLING=true
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3737/ || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
     restart: unless-stopped
-
-volumes:
-  markshow-data:

@@ -7,5 +7,5 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_DIR"
 
 echo "==> Running tests inside container..."
-docker compose exec markshow pnpm test
+docker compose -p markshow-app exec markshow pnpm test
 echo "==> Tests complete."

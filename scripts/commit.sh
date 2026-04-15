@@ -14,13 +14,20 @@ else
   exit 1
 fi
 
-echo "==> Step 1/3: Building project..."
-docker compose exec -e NODE_ENV=production markshow pnpm build
+echo "==> Step 1/3: Building project (fresh container)..."
+docker compose -p markshow-app down --remove-orphans 2>/dev/null || true
+docker compose -p markshow-app up -d --build
+sleep 5
+docker compose -p markshow-app exec -e NODE_ENV=production markshow pnpm build
 echo "    Build passed."
 
 echo "==> Step 2/3: Running tests..."
-docker compose exec markshow pnpm test
+docker compose -p markshow-app exec markshow pnpm test
 echo "    Tests passed."
+
+echo "==> Restarting dev server..."
+docker compose -p markshow-app down --remove-orphans 2>/dev/null || true
+docker compose -p markshow-app up -d --build
 
 echo "==> Step 3/3: Committing..."
 git add -A

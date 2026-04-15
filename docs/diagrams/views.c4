@@ -1,0 +1,23 @@
+// MarkShow — C4 Architecture Views
+
+views {
+
+  view index {
+    title 'MarkShow — System Context'
+    description 'High-level view showing MarkShow and its external dependencies'
+    include presenter, markshow, aiprovider
+  }
+
+  view containers of markshow {
+    title 'MarkShow — Containers'
+    description 'Internal containers: web application and file storage'
+    include *
+  }
+
+  view components of markshow.webapp {
+    title 'MarkShow — Web App Components'
+    description 'Hexagonal architecture: UI pages, API routes, domain/ports, adapters'
+    include *
+  }
+
+}

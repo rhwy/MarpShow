@@ -6,6 +6,9 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 cd "$PROJECT_DIR"
 
+echo "==> Stopping any existing containers..."
+docker compose -p markshow-app down --remove-orphans 2>/dev/null || true
+
 echo "==> Starting MarkShow in production mode..."
-docker compose -f docker-compose.yml up -d --build
-echo "==> MarkShow is running at http://localhost:${APP_PORT:-3000}"
+docker compose -p markshow-app up -d --build
+echo "==> MarkShow is running at http://localhost:${APP_PORT:-3737}"

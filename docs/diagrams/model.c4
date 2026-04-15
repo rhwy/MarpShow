@@ -1,0 +1,150 @@
+// MarkShow — C4 Architecture Model
+
+model {
+
+  // === Actors ===
+  presenter = actor 'Presenter' {
+    description 'Creates and presents markdown slide decks'
+  }
+
+  // === External Systems ===
+  aiprovider = external 'AI Provider' {
+    description 'OpenAI-compatible API (Ollama, Claude, OpenAI, etc.)'
+  }
+
+  // === MarkShow System ===
+  markshow = system 'MarkShow' {
+    description 'Markdown-first presentation editor with AI co-author'
+
+    webapp = container 'Web Application' {
+      description 'Next.js 15 App Router application'
+      technology 'Next.js, TypeScript, React 19'
+
+      // UI Layer
+      topbar = component 'TopBar' {
+        description 'Shared navigation with back button, logo, Home/Settings links'
+        technology 'React'
+      }
+
+      homepage = component 'Home Page' {
+        description 'Browse, create, filter, delete presentations'
+        technology 'React'
+      }
+
+      editorpage = component 'Editor Page' {
+        description 'CodeMirror editor + live Marp preview + AI assistant panel'
+        technology 'React, CodeMirror 6'
+      }
+
+      presentpage = component 'Presentation Page' {
+        description 'Fullscreen 16:9 slide viewer with keyboard navigation'
+        technology 'React'
+      }
+
+      detailspage = component 'Details Page' {
+        description '3-column view: markdown source, version history, conversation log'
+        technology 'React'
+      }
+
+      settingspage = component 'Settings Page' {
+        description 'Themes, plugins, editor prefs, AI provider config'
+        technology 'React'
+      }
+
+      // Core Domain
+      domain = component 'Domain Layer' {
+        description 'Entities (Presentation, VersionSnapshot, Settings), value objects, factory functions'
+        technology 'TypeScript'
+      }
+
+      ports = component 'Port Interfaces' {
+        description 'PresentationRepository, MarpRenderer, AIAssistant contracts'
+        technology 'TypeScript interfaces'
+      }
+
+      // Infrastructure Adapters
+      fsstorage = component 'Filesystem Storage' {
+        description 'Reads/writes presentation folders (md, css, js, metadata, history, conversation)'
+        technology 'Node.js fs'
+      }
+
+      marprenderer = component 'Marp Renderer' {
+        description 'Renders markdown to HTML slides with theme support, image path rewriting, CSS scoping'
+        technology 'Marp Core'
+      }
+
+      aiadapter = component 'AI Adapter' {
+        description 'OpenAI-compatible chat completions with SSE streaming'
+        technology 'Fetch API'
+      }
+
+      logger = component 'Logger' {
+        description 'Console-based logging abstraction (pluggable)'
+        technology 'TypeScript'
+      }
+
+      // Rendering Plugins
+      mermaidplugin = component 'Mermaid Plugin' {
+        description 'Renders mermaid code blocks as SVG diagrams (optional plugin)'
+        technology 'Mermaid.js'
+      }
+
+      chartplugin = component 'Chart Plugin' {
+        description 'Renders chart JSON blocks as canvas charts (optional plugin)'
+        technology 'Chart.js'
+      }
+
+      // API Routes
+      apipresentations = component 'Presentations API' {
+        description 'CRUD + render + media + history + conversation + chat'
+        technology 'Next.js API Routes'
+      }
+
+      apisettings = component 'Settings API' {
+        description 'GET/PUT global app settings'
+        technology 'Next.js API Routes'
+      }
+
+      apithemes = component 'Themes API' {
+        description 'CRUD for custom Marp CSS themes'
+        technology 'Next.js API Routes'
+      }
+    }
+
+    filestorage = storage 'File Storage' {
+      description 'Local filesystem: presentation folders, themes, settings'
+      technology 'Docker bind mount (data/presentations/)'
+    }
+  }
+
+  // === Relationships ===
+
+  presenter -> markshow 'Uses'
+
+  // Pages → API
+  markshow.webapp.homepage -> markshow.webapp.apipresentations 'Lists, creates, deletes'
+  markshow.webapp.editorpage -> markshow.webapp.apipresentations 'Loads, saves, renders, AI chat'
+  markshow.webapp.presentpage -> markshow.webapp.apipresentations 'Renders slides'
+  markshow.webapp.detailspage -> markshow.webapp.apipresentations 'Reads history, conversation'
+  markshow.webapp.settingspage -> markshow.webapp.apisettings 'Reads/saves settings'
+  markshow.webapp.settingspage -> markshow.webapp.apithemes 'Manages themes'
+
+  // API → Domain
+  markshow.webapp.apipresentations -> markshow.webapp.ports 'Calls port interfaces'
+  markshow.webapp.apisettings -> markshow.webapp.domain 'Uses settings model'
+  markshow.webapp.apithemes -> markshow.webapp.domain 'Uses slugify'
+
+  // Domain → Adapters (via ports)
+  markshow.webapp.ports -> markshow.webapp.fsstorage 'Storage implementation'
+  markshow.webapp.ports -> markshow.webapp.marprenderer 'Render implementation'
+  markshow.webapp.ports -> markshow.webapp.aiadapter 'AI implementation'
+
+  // Adapters → External
+  markshow.webapp.fsstorage -> markshow.filestorage 'Reads/writes files'
+  markshow.webapp.marprenderer -> markshow.filestorage 'Loads custom themes'
+  markshow.webapp.aiadapter -> aiprovider 'Chat completions API'
+
+  // Renderer → Plugins
+  markshow.webapp.marprenderer -> markshow.webapp.mermaidplugin 'Renders diagrams'
+  markshow.webapp.marprenderer -> markshow.webapp.chartplugin 'Renders charts'
+}

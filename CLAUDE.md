@@ -16,7 +16,7 @@ MarkShow is a **markdown-first presentation editor** using [Marp](https://marp.a
 | Styling | **Tailwind CSS v4** | Design tokens in `src/app/globals.css` |
 | Code editor | **CodeMirror 6** | Markdown/CSS/JS tabs |
 | Slide rendering | **Marp Core** (`@marp-team/marp-core`) | Markdown → HTML slides |
-| AI | **Claude API** (`@anthropic-ai/sdk`) | Co-author assistant |
+| AI | **OpenAI-compatible API** | Provider-agnostic: works with Claude, Ollama (gemma4), or any OpenAI-compatible endpoint. Configured via env vars (url, model, system prompt) |
 | Icons | **Lucide React** | Icon-only navigation |
 | Test framework | **Vitest** + React Testing Library + happy-dom | |
 | Package manager | **pnpm** | |
@@ -124,6 +124,12 @@ Every recurring action has a script. A developer only needs:
 - Format: `- [TYPE : ID-NNN] title` (types: feat, fix, init, clean, struct, test)
 - Sequential ID in `docs/tasks/id.txt` — increment per new backlog item
 - Many commits per item OK, never many items in one commit
+
+### Workflow — Task Execution Protocol
+- **Always create backlog tasks BEFORE starting work.** Each new request = new task(s) with sequential IDs.
+- **Commit after EACH task completion** — not batched. Each commit includes the code, test, task tracking updates, and devlog entry.
+- **No authorization needed for commits during branch work** — only ask the user before merging to main.
+- **Execute tasks in logical/priority order**, not necessarily FIFO. Group by dependency and coherence.
 
 ---
 
