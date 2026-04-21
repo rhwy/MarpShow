@@ -76,60 +76,20 @@ Every recurring action has a script. A developer only needs:
 
 ## Development Rules
 
-### Rule 1 — Quality & Testability
-- Unit, use-case, and integration tests created with ALL code
-- Tests run before each commit (enforced by `commit.sh`)
-- User docs in `docs/user/` — use-case oriented, not feature lists
+> **Full process**: `docs/handoff/PROCESS.md`
+> **Branch checklist**: `docs/handoff/BRANCH-CHECKLIST.md`
+> **Tech stack details**: `docs/handoff/TECHSTACK.md`
 
-### Rule 2 — Architecture
-- Hexagonal architecture, clean code, separation of concerns
-- Important decisions → ADR files in `docs/Adr/`
-- C4 diagrams in `docs/diagrams/` (DSL format, LikeC4-compatible)
-
-### Rule 3 — Components
-- UI components: isolated, testable, cohesive, props-driven
-- Must work standalone, carry all needed logic internally
-
-### Rule 4 — Containerization
-- ALL build/run/test inside Docker containers
-- All config via environment variables (`.env` → compose → container)
-- Params: ports, paths, AI config (url, models, keys)
-
-### Rule 5 — Scripting
-- One script per basic task: dev, run, build, test, commit, push
-- `commit.sh` = build + test + commit (quality gate)
-
-### Rule 6 — Versioning
-- Work in dedicated branches per batch
-- Commits autonomous if tests pass
-- **Merge to main requires human confirmation** (squash merge with summary)
-- Dev log in `docs/devlog/yyyy-MM-dd.md` — sections `## hh:mm - branch-name`
-
-### Rule 7 — Logging & Tracing
-- All events/actions logged via abstracted `Logger` interface
-- `createLogger(context)` factory in `@/infrastructure/logging`
-- Ready to plug any log receiver later
-
-### Rule 8 — Definition of Done
-- App compiles, runs, container up, tests pass
-- Code committed, dev log written
-- Documentation updated
-- Architecture reviewed (no tech debt accumulation)
-- Tasks updated
-- Human review before merge
-
-### Rule 9 — Task Tracking
-- `docs/tasks/backlog.md` — items to do
-- `docs/tasks/done-{yyyyMM}.md` — completed items (anté-chronological, by day)
-- Format: `- [TYPE : ID-NNN] title` (types: feat, fix, init, clean, struct, test)
-- Sequential ID in `docs/tasks/id.txt` — increment per new backlog item
-- Many commits per item OK, never many items in one commit
-
-### Workflow — Task Execution Protocol
-- **Always create backlog tasks BEFORE starting work.** Each new request = new task(s) with sequential IDs.
-- **Commit after EACH task completion** — not batched. Each commit includes the code, test, task tracking updates, and devlog entry.
-- **No authorization needed for commits during branch work** — only ask the user before merging to main.
-- **Execute tasks in logical/priority order**, not necessarily FIFO. Group by dependency and coherence.
+### Quick reference (see PROCESS.md for full details)
+- **Branch autonomy**: every branch is self-contained — conversation can be discarded after merge
+- **Task-first**: always create backlog tasks BEFORE coding (increment `docs/tasks/id.txt`)
+- **Commit per task**: code + tests + docs + tracking in each commit
+- **No auth for branch commits** — only ask before merge to main
+- **Quality gate**: `commit.sh` = build → test → commit (rejects if anything fails)
+- **Hexagonal architecture**: core/domain + core/ports → infrastructure adapters → UI components
+- **All work in Docker**: `./scripts/dev.sh`, `./scripts/build.sh`, `./scripts/test.sh`
+- **Docs**: user docs (use-case oriented), ADRs, C4 diagrams (LikeC4), devlog, troubleshooting
+- **Logging**: always via `createLogger(context)` — never raw `console.log`
 
 ---
 
@@ -183,3 +143,8 @@ This folder is bind-mounted into the container at `STORAGE_PATH` (`/data/present
 - **ADR-001:** Hexagonal architecture with Next.js App Router
 - **ADR-002:** Docker-first development with hot reload
 - **ADR-003:** Vitest for testing
+- **ADR-004:** Provider-agnostic AI via OpenAI-compatible API
+- **ADR-005:** AI diff review with @codemirror/merge
+- **ADR-006:** Filesystem-based themes with Marp themeSet
+- **ADR-007:** Offline-first design (bundled fonts/scripts)
+- **ADR-008:** Manual version snapshots (not auto-history)
