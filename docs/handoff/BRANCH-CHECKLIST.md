@@ -61,3 +61,18 @@ git commit -m "Summary of the branch work
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
 git push -u origin main
 ```
+
+## After Merge — Session Cleanup
+
+```bash
+# In Claude Code terminal:
+/clear
+```
+
+Before clearing, note context stats from the status bar in the devlog:
+```markdown
+## hh:mm - feat/branch-name [merged + cleared]
+Tokens used: ~XXk / 200k (~XX% consumed). Session duration: ~Xh.
+```
+
+After `/clear`, Claude re-reads `CLAUDE.md` automatically. The next session starts cold with full context headroom.

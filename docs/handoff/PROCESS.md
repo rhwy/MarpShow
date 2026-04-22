@@ -161,7 +161,40 @@ The `commit.sh` script enforces: **build → test → commit**. If build or test
 2. Update devlog with the session's work
 3. Update CLAUDE.md if any project-level changes
 4. Merge to main if the user confirms
-5. **The conversation can now be discarded** — all context is in the project files
+5. **Check session consumption** (see §7.1 below) — note stats in devlog if relevant
+6. Run `/clear` in Claude Code to wipe the conversation from context
+7. **The conversation can now be discarded** — all context is in the project files
+
+### 7.1 Session consumption & context management
+
+**Viewing stats in Claude Code:**
+The status bar at the bottom of the Claude Code terminal shows live context usage:
+- **Tokens used / total** — e.g. `47k / 200k`
+- **% remaining** — how much headroom is left
+- **Cost** — accumulated spend for the session
+
+**When to start a fresh session:**
+- Context is above ~70–80% full → start a new session (context compression degrades quality)
+- After merging a branch → natural break point, clean slate for next feature
+- After a long exploratory session with many tool calls → quality drops as context fills
+
+**How to reset:**
+```
+/clear
+```
+Clears the entire conversation history from Claude's context window. Claude Code will re-read `CLAUDE.md` automatically on the next message. All project state lives in files — nothing is lost.
+
+**What `/clear` does NOT do:**
+- Does not affect your files, git history, or Docker containers
+- Does not reset the cost counter (that's per API key, not per conversation)
+- Does not affect other open tabs/sessions
+
+**Recommended devlog entry before clearing:**
+```markdown
+## 14:30 - feat/my-feature [cleared]
+Context: ~85% full after N tasks. Stats: ~180k tokens used.
+Branch merged to main. Session ended cleanly.
+```
 
 ---
 
